@@ -33,7 +33,23 @@ outcome_score = {
     'CB': 0,  # scissors beats paper
 }
 
+# [opponent][wanted outcome] = [shape to play]
+outcome_shapes = {
+    'AX': 'C',  # loss
+    'AY': 'A',  # draw
+    'AZ': 'B',  # win
+
+    'BX': 'A',  # loss
+    'BY': 'B',  # draw
+    'BZ': 'C',  # win
+
+    'CX': 'B',  # loss
+    'CY': 'C',  # draw
+    'CZ': 'A',  # win
+}
+
 score_total = 0
+p2 = True
 
 i = 0
 for line in inp:
@@ -43,7 +59,10 @@ for line in inp:
 
     opponent = split[0]
     self_enc = split[1]
-    self = enc_map[self_enc]
+    if p2:  # part 2
+        self = outcome_shapes[f'{opponent}{self_enc}']
+    else:
+        self = enc_map[self_enc]
 
     print(f'{opponent} {self}')
 
