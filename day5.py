@@ -43,7 +43,7 @@ print(starting_layout.shape)
 
 # convert back to individual stacks
 stacks = []
-for i in range(0, starting_layout.shape[0]):
+for i in range(0, starting_layout.shape[1]):
     lst = starting_layout[i].tolist()
     lst.reverse()
     stacks.append(list(filter(lambda x: x is not None and not x.isnumeric(), lst)))
@@ -71,6 +71,8 @@ def print_stacks():
 
 print_stacks()
 
+part2 = True
+
 ## Run Moves
 print()
 print("Moving...")
@@ -80,11 +82,17 @@ for mv in moves:
     source -= 1
     target -= 1
 
-    for a in range(0, amount):
-        removed = stacks[source].pop(len(stacks[source]) - 1)
-        stacks[target].append(removed)
+    if part2:
+        removed = stacks[source][-amount:]
+        del stacks[source][-amount:]
+        print(removed)
+        stacks[target].extend(removed)
+    else:
+        for a in range(0, amount):
+            removed = stacks[source].pop(len(stacks[source]) - 1)
+            stacks[target].append(removed)
 
-        print_stacks()
+    print_stacks()
 
 # Check top crates
 msg = ''
