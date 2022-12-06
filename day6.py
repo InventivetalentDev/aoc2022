@@ -3,6 +3,8 @@ from util import readInput
 inp = readInput('day6')
 inp = inp[0]
 
+COUNT = 14
+
 seen = []
 idx = 0
 rolling_index = 0
@@ -28,12 +30,12 @@ for c in inp:
         seen.append(c)
         # unique-=1
 
-    if len(seen) > 4:
+    if len(seen) > COUNT:
         seen.pop(0)
 
     unique = set(seen)
 
-    if len(unique) >= 4:
+    if len(unique) >= COUNT:
         print("found start!")
         print(seen)
         print(unique)
