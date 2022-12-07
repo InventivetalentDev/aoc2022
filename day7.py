@@ -1,11 +1,13 @@
 import os
+import shutil
 
 from util import readInput
 
 inp = readInput('day7')
 
+
 # based on https://stackoverflow.com/a/1392549/6257838
-def get_size(start_path = '.'):
+def get_size(start_path='.'):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
@@ -20,10 +22,17 @@ def get_size(start_path = '.'):
 
 path = []
 
+filesystem_size = 70000000
+required_size = 30000000
+
 max_size = 100000
-summed_size =0
+summed_size = 0
+total_size = 0
 
 root = './tmp/day7'
+
+# cleanup first
+shutil.rmtree(root)
 
 last_dir_name = ''
 current_dir_name = '/'
@@ -41,10 +50,11 @@ for line in inp:
 
                     dirpath = os.path.join(root, *path[1:])
                     size = get_size(dirpath)
-                    print("size of",dirpath,size)
 
-                    if size<max_size:
-                        summed_size+=size
+                    if size < max_size:
+                        summed_size += size
+
+                    total_size += size
 
                     # go one up
                     path.pop()
@@ -54,7 +64,7 @@ for line in inp:
                     last_dir_name = current_dir_name
                     current_dir_name = args[0]
 
-                #print(">", current_dir_name)
+                # print(">", current_dir_name)
             case 'ls':
                 expect_ls = True
         continue
@@ -63,17 +73,35 @@ for line in inp:
         meta, file = line.split(' ')
         current_contents.append(line)
 
-
         filepath = os.path.join(root, *path[1:], file)
         print(filepath)
 
         if meta == 'dir':
-            print("> mkdir", filepath)
-            os.makedirs(filepath,exist_ok=True)
+            # print("> mkdir", filepath)
+            os.makedirs(filepath, exist_ok=True)
         else:
-            print("> write", filepath)
-            with open(filepath,'w') as f:
+            # print("> write", filepath)
+            with open(filepath, 'w') as f:
                 f.write(meta)
 
+root_size = get_size(root)
 
 print(summed_size)
+print("root", root_size)
+unused = filesystem_size - root_size
+print("unused", unused)
+to_delete = required_size - unused
+print("need to delete", to_delete)
+
+smallest = filesystem_size
+for dirpath, dirnames, filenames in os.walk(root):
+    for d in dirnames:
+        print(d)
+        path = os.path.join(dirpath, d)
+        print(path)
+        sze = get_size(path)
+        print(sze)
+        if sze >= to_delete and sze < smallest:
+            smallest = sze
+
+print(smallest)
